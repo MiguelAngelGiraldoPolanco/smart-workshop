@@ -1,150 +1,102 @@
-# Projet — Test technique Koralya
+# Smart Workshop
 
-Bienvenue ! Tu travailles sur un serveur préinstallé pour ton test technique.
-**Tu n'as PAS besoin de sudo** pour rien : tout est déjà configuré.
+**An evolving automotive workshop management platform exploring modern backend engineering, AI agents and cloud infrastructure.**
 
----
+Smart Workshop is a personal software engineering project focused on developing a modern automotive workshop management system.
 
-## 🚀 Lancer le projet
+Originally developed as part of a technical interview challenge, this project is being progressively redesigned, improved and extended as a long-term learning and engineering initiative.
 
-Le serveur **gunicorn** tourne déjà en tâche de fond avec `--reload` activé.
+The goal is to build a maintainable, scalable application while exploring modern backend development, artificial intelligence, containerization and cloud technologies.
 
-```
-http://178.104.96.220/
-```
+## Project Goals
 
-Quand tu modifies un fichier `.py`, gunicorn redémarre automatiquement.
-Rafraîchis le navigateur et tu vois tes changements.
+- Build a robust automotive workshop management system.
+- Improve software architecture, code quality and maintainability.
+- Develop a well-structured REST API.
+- Integrate AI agents capable of interacting with application services and business data.
+- Learn containerization and orchestration with Docker and Kubernetes.
+- Design and deploy cloud infrastructure using AWS.
+- Implement automated testing, CI/CD and monitoring.
 
----
+## Technology Stack
 
-## 🐘 Base de données PostgreSQL
+### Current Foundation
 
-PostgreSQL 16 déjà connectée au projet Django (déjà configurée dans
-`projet/settings.py`) :
+- Python
+- Django
+- PostgreSQL
 
-| Paramètre | Valeur      |
-|-----------|-------------|
-| Host      | `127.0.0.1` |
-| Port      | `5432`      |
-| Database  | `candidato` |
-| User      | `candidato` |
-| Password  | `candidato` |
+### Planned Technologies
 
-Pour ouvrir un shell SQL :
+- Django REST Framework
+- Redis
+- Celery
+- Docker & Docker Compose
+- Kubernetes
+- AWS (EKS, ECR, RDS, S3, IAM)
+- LangGraph
+- LLM APIs
+- GitHub Actions
 
-```bash
-psql -h 127.0.0.1 -U candidato -d candidato
-# password : candidato
-```
+*The technology stack will evolve as new components are implemented.*
 
-Tu peux créer d'autres bases (`createdb mabase`).
+## Planned Features
 
----
+### Workshop Management
 
-## 🔴 Redis
+- Customer management
+- Vehicle registration and history
+- Repair orders and maintenance tracking
+- Spare parts and inventory management
+- Estimates and invoices
+- Workshop operations dashboard
 
-Déjà installé et démarré sur `127.0.0.1:6379` (pour Celery, cache, sessions).
+### AI Integration
 
-```bash
-redis-cli
-```
+- AI-powered workshop assistant
+- Specialized agents for different business operations
+- Vehicle maintenance information retrieval
+- Spare parts and inventory queries
+- Repair cost estimation assistance
+- Retrieval-Augmented Generation (RAG)
 
----
+### Infrastructure & Cloud
 
-## 📦 Paquets Python disponibles (`~/base_venv/`)
+- Containerized application architecture
+- Kubernetes orchestration
+- AWS cloud deployment
+- CI/CD pipelines
+- Application monitoring and logging
 
-```bash
-source ~/base_venv/bin/activate
-```
+## Development Roadmap
 
-Déjà installés :
+This project is under active development and will evolve through several stages:
 
-- **Web** : Django 6, djangorestframework, gunicorn, whitenoise, django-cors-headers
-- **HTTP** : requests, httpx
-- **PDF** : weasyprint (testé)
-- **Image** : Pillow
-- **Scraping** : beautifulsoup4, lxml
-- **Async/Tâches** : celery + redis (client)
-- **DB** : psycopg2-binary
-- **Données/Excel** : pandas, openpyxl
-- **Tests** : pytest, pytest-django
-- **Config** : python-dotenv, django-environ
-
-Tu peux installer ce que tu veux avec `pip install <paquet>`.
-
----
-
-## 🤖 Claude Code (déjà authentifié)
-
-Le CLI **Claude Code** (Opus 4.7) est installé avec notre compte Anthropic.
-**Pas besoin de compte Claude.**
-
-```bash
-claude
-```
-
-L'extension VS Code **Claude Code** est aussi pré-installée. Dans VS Code :
-`Ctrl+Shift+P` → "Claude".
-
-> 💡 Tu peux écrire à Claude en **espagnol**. Lui programmera le projet en
-> **français** (interface, textes utilisateur). C'est exactement comme on
-> travaille en interne chez Koralya.
-
----
-
-## 📁 Structure du projet
-
-```
-~/proyecto/
-├── manage.py
-├── projet/
-│   ├── settings.py    ← DATABASES déjà configuré sur postgres
-│   ├── urls.py
-│   └── wsgi.py
-├── README.md          ← ce fichier
-└── CLAUDE.md          ← contexte pour Claude Code
-```
-
----
-
-## 🌐 Accès au site
-
-| URL                              | Quoi |
-|----------------------------------|------|
-| `http://178.104.96.220/`         | Ton site Django |
-| `http://178.104.96.220/admin/`   | Admin Django (`python manage.py createsuperuser`) |
-
----
-
-## 🔧 Détails techniques
-
-- **OS** : Ubuntu 24.04 LTS
-- **Python** : 3.12.3 (`~/base_venv/`)
-- **Node.js** : v20.20.2
-- **Stack** : nginx → gunicorn (`--reload`, port 8000) → Django
-- **Static** : `staticfiles/` servi par nginx (`/static/`)
-- **Media** : `media/` servi par nginx (`/media/`)
-
----
-
-Bonne chance ! 🍀
-
-— L'équipe Koralya
+- [x] Initial Django application
+- [ ] Code review and architectural improvements
+- [ ] Automated testing
+- [ ] REST API implementation
+- [ ] Database architecture improvements
+- [ ] Docker containerization
+- [ ] AI agent integration
+- [ ] Kubernetes deployment
+- [ ] AWS infrastructure
+- [ ] CI/CD automation
+- [ ] Monitoring and observability
 
 
-## Acceso a la aplicación
+## Development Philosophy
 
-Usuario de prueba (superusuario):
-- Usuario: root
-- Contraseña: password
+This project is developed as a continuous learning and engineering exercise.
 
-Para crear el usuario en una instalación limpia:
-    python manage.py createsuperuser
+The main priorities are:
 
-Acceso al panel de administración de Django: /admin
-Acceso a la aplicación: /
+- **Understanding:** Learning the technologies rather than simply integrating them.
+- **Code Quality:** Applying software engineering best practices.
+- **Architecture:** Making technical decisions based on real requirements.
+- **Documentation:** Recording technical decisions and trade-offs.
+- **Continuous Improvement:** Building, testing and improving incrementally.
 
-> Nota: estas son credenciales de prueba para facilitar la evaluación.
-> En un entorno real, los usuarios se crearían de forma segura y nunca
-> se documentarían credenciales en texto plano en el repositorio.
+**Status:** Work in Progress 🚧
+
+**Maintainer:** Personal project
