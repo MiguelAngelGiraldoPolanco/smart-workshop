@@ -1,58 +1,84 @@
-# Contexte du projet pour Claude Code
+# CLAUDE.md
 
-Ce fichier décrit l'environnement. Lis-le avant de proposer des commandes ou
-des installations.
+## Project Overview
 
-## Environnement
-- **OS** : Ubuntu 24.04 LTS, **pas de sudo disponible** pour le candidat
-- **Python** : 3.12.3 dans le venv `~/base_venv/`
-- **Node** : v20
-- **Stack web** : nginx (port 80) → gunicorn (`--reload`, port 8000) → Django
+Smart Workshop is a personal automotive workshop management platform built with Python and Django.
 
-## Base de données
-PostgreSQL 16 **déjà configurée** dans `projet/settings.py` :
-- DATABASES.default → `postgresql://candidato:candidato@127.0.0.1:5432/candidato`
-- N'invente pas la connexion : c'est déjà fait
-- Pour ouvrir psql : `psql -h 127.0.0.1 -U candidato -d candidato` (password `candidato`)
+The project is under continuous development, with the long-term goal of integrating AI agents and deploying cloud infrastructure using Docker, Kubernetes and AWS.
 
-## Redis
-Disponible sur `127.0.0.1:6379` pour Celery/cache.
+## Development Guidelines
 
-## Paquets Python pré-installés (n'installe rien si tu vois déjà le paquet)
-Django 6.0, DRF, gunicorn, weasyprint (PDF), Pillow, requests, httpx,
-beautifulsoup4, lxml, celery, redis, psycopg2-binary, pandas, openpyxl,
-pytest, pytest-django, python-dotenv, django-environ, whitenoise,
-django-cors-headers.
+### General Principles
 
-## Auto-reload
-Le service `proyecto-gunicorn` se relance automatiquement quand un fichier
-`.py` change. **Ne lance pas `python manage.py runserver`** — gunicorn s'en charge.
+- Follow clean code principles and maintain readable, maintainable code.
+- Prefer simple solutions over unnecessary complexity.
+- Respect the existing project architecture.
+- Avoid introducing unnecessary dependencies.
+- Explain significant architectural decisions before implementing them.
+- Do not modify unrelated functionality.
 
-Pour appliquer une migration :
-```bash
-cd ~/proyecto && python manage.py migrate
-```
+### Python & Django
 
-Si vraiment besoin de redémarrer gunicorn, ce n'est pas accessible sans sudo.
+- Follow Python best practices and PEP 8 conventions.
+- Use Django's built-in functionality whenever appropriate.
+- Keep business logic separate from views and models when necessary.
+- Use Django ORM for database operations.
+- Implement appropriate validation and error handling.
+- Follow Django security recommendations.
 
-## Tests
-`pytest` + `pytest-django` disponibles. Lance avec `pytest`.
+### Database
 
-## Static / media
-- `python manage.py collectstatic` → `~/proyecto/staticfiles/`
-- nginx les sert depuis `/static/` et `/media/`
+- Preserve data integrity.
+- Use Django migrations for database schema changes.
+- Avoid destructive database operations without explicit approval.
+- Never hardcode database credentials.
 
-## Langue du projet
-- Le **produit final doit être en français** (UI, messages utilisateur).
-- Le candidat te parle en **espagnol** ; toi tu programmes en français.
-- Settings : `LANGUAGE_CODE = "fr-fr"`, `TIME_ZONE = "Europe/Paris"`.
+### Testing
 
-## URL d'accès du site
-`http://178.104.96.220/` (firewall ouvert uniquement à l'IP du candidat
-en cours).
+- Write tests for new functionality.
+- Run relevant tests after modifying existing code.
+- Consider edge cases and error handling.
+- Do not assume functionality works without verification.
 
-## Limites
-- Pas de sudo
-- Le serveur est éphémère : il sera détruit après le test
-- Tout ce qui est dans `~/proyecto/` sera sauvegardé automatiquement quand
-  le candidat clique "Terminer entrevista"
+### Security
+
+- Never commit secrets, passwords, API keys or environment variables.
+- Use environment variables for sensitive configuration.
+- Validate user input.
+- Apply appropriate authentication and authorization.
+
+### AI Development
+
+- AI agents must interact with application functionality through explicitly defined tools.
+- Do not allow agents to bypass application business rules or permissions.
+- Validate AI-generated outputs before executing sensitive operations.
+- Require human confirmation for critical operations.
+
+### Documentation
+
+- Update documentation when functionality or architecture changes.
+- Document significant architectural decisions.
+- Keep the README consistent with the actual implementation.
+- Distinguish implemented features from planned functionality.
+
+## Development Workflow
+
+Before implementing changes:
+
+1. Inspect the existing codebase.
+2. Understand the current architecture.
+3. Identify the files and components affected.
+4. Explain the proposed approach when the change is significant.
+
+After implementing changes:
+
+1. Review the modified code.
+2. Run relevant tests.
+3. Report what was changed.
+4. Identify remaining limitations or potential improvements.
+
+## Important
+
+This is a learning-oriented engineering project.
+
+Prioritize helping the developer understand the implementation, technical decisions and trade-offs rather than simply generating code.
