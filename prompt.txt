@@ -1,0 +1,214 @@
+PROYECTO: AtelierVitre - Gestión de Reparaciones de Parabrisas
+CLIENTE: Pascal Fournier (52 años, sin experiencia en TI)
+STACK: Django 4.2 + PostgreSQL + Bootstrap 5 + CSS propio breve:
+       botones grandes (font ~1.25rem), texto ~1.15rem, alto contraste.
+       Pascal y Marc tienen +50 años.
+TIEMPO: 4 horas máximo
+COMPLEJIDAD: MVP Minimalista - Sin concurrencia alta
+
+CONTEXTO DEL NEGOCIO:
+    - Taller pequeño (2 personas: Pascal + Marc)
+    - Actualmente pierden 2-3 horas/día en papeleo
+    - Necesitan: presupuestos rápidos, facturas automáticas, historial de clientes
+    - NO necesitan: OCR complejo, integraciones aseguradoras complejas, usuarios múltiples
+
+OBJETIVO PRINCIPAL:
+    Reducir tiempo de presupuesto de 2-3 horas a 5 minutos.
+
+REGLA DE CÓDIGO:
+    - Campos, modelos, variables y URLs: SIEMPRE en inglés sin acentos ni ñ
+    - Textos visibles (labels, botones, mensajes, PDFs): en francés
+    
+MODELOS:
+
+        USUARIO / LOGIN
+        - Usar el sistema de autenticación de Django (django.contrib.auth), NO crear modelo User propio
+        - Crear un superusuario root con el comando createsuperuser (o en el script de datos):
+            usuario: root   /   contraseña: password
+        - La contraseña se guarda encriptada automáticamente (nunca en texto plano)
+
+        Client
+        - name
+        - email         ← blank=True   
+        - phone         ← blank=True 
+        - created
+        - updated
+
+        Vehicle
+        - client (FK → Client)
+        - license_plate (UNIQUE)
+        - brand
+        - model
+        - year null=True, blank=True  
+        - vin
+        - created
+
+        Service
+        - code (UNIQUE)
+        - name
+        - description
+        - category
+        - price
+        - price_on_request
+        - is_supplement
+        - active
+        - created
+
+        Quote
+        - vehicle (FK → Vehicle)
+        - client (FK → Client)
+        - status
+        - discount
+        - vat_rate
+        - subtotal_ht
+        - vat_amount
+        - total_ttc
+        - notes
+        - created
+        - insurer (FK → Insurer, null=True, blank=True)  
+
+        QuoteItem
+        - quote (FK → Quote)
+        - service (FK → Service)
+        - quantity
+        - unit_price
+
+        Invoice
+        - quote (OneToOneField → Quote)
+        - number (UNIQUE)
+        - issued
+        - paid
+        - paid_date
+
+        RepairHistory
+        - vehicle (FK → Vehicle)
+        - client (FK → Client)
+        - date                
+        - intervention_text  
+        - amount_ht           
+        - status_text         
+        - notes               
+        - is_legacy           
+        - created
+
+        Insurer
+        - name                  
+        - main_contact          ← "contact_principal" (email, o "fax:0561234567")
+        - secondary_email       ← "email_secondaire"  (blank=True, solo Macif lo tiene)
+        - send_format           ← "format_envoi" (choices: portail/email/fax_ou_email)
+        - portal_url            ← "url_portail"   (blank=True, solo Allianz)
+        - partner_code          ← "code_partenaire" (blank=True, solo Allianz)
+        - discount_rate         ← "remise_appliquee" → SOLO el número (10.00, 8.00, 12.00)
+        - discount_scope        ← NUEVO: a qué aplica el descuento
+        - notes                 ← "remarque" (las notas de Pascal, tal cual)
+        - active                ← default=True
+        - created
+
+IMPORTADORES DE DATOS (management commands):
+    - import_catalog.py    → lee catalogue_tarifs.pdf, crea los Service reales
+                            (con code, price, category, price_on_request, is_supplement)
+    - import_reparations.py → lee reparations.csv: normaliza teléfonos, agrupa por
+                            matrícula (NO por email, hay typos), crea Client + Vehicle +
+                            RepairHistory sin duplicar clientes que se repiten
+    - import_insurers.py   → lee assureurs.json, crea los 3 Insurer (separar el número
+                            del descuento del texto: "12% (impacts)" → 12.00 + scope)
+    - Email vacío o teléfono vacío → se deja en blanco, no falla
+    - Todos idempotentes (get_or_create)
+
+FUNCIONALIDADES ESPECIALES
+
+
+    PDF GENERATION (utils.py):
+    - El PDF de factura DEBE incluir los datos fiscales de AtelierVitre (vendedor):
+        AtelierVitre — Pascal Fournier
+        12 rue des Mécaniciens, 31000 Toulouse
+        SIRET: 538 247 192 00018 — TVA intracom: FR45538247192
+        Email: contact@ateliervitre.fr
+    - Del cliente basta el nombre (sin dirección)
+    - Mostrar desglose HT / TVA 20% / TTC
+
+    EMAIL:
+    - Usar Django core mail (SMTP simple)
+    - Email text simple (no HTML complejo)
+    - Adjuntar PDF
+    - Enviar a quote.cliente.email
+
+    BÚSQUEDA:
+    - Endpoint JSON /search?q=...
+    - Búsqueda por nombre cliente, matrícula
+    - Al encontrar, mostrar cliente + sus vehículos + historial
+    
+
+    NUMERACIÓN FACTURA:
+    - Formato FAC-00001, dentro de transaction.atomic() para evitar duplicados
+    - Script: última factura + 1
+    - Ej: FAC-00001, FAC-00002, etc.
+
+    CÁLCULO IVA:
+    - Quote.recalc_total(): subtotal_ht = suma items - discount;
+        vat_amount = subtotal_ht * vat_rate/100; total_ttc = subtotal_ht + vat_amount
+    - Llamar tras añadir/quitar servicios. Usar Decimal, nunca float.
+    - PDF y reporte muestran las 3 cifras (HT, IVA, TTC) — factura francesa lo exige
+
+
+
+FRONTEND:
+
+    1. login con usuario y contraseña (solo un usuario root con name = root y password = password)
+    2. todas las vistas con confirmacion de login
+    3. un dasboard sencillo con botones legibles y grandes hacias las vistas: 
+        1. INICIO / DASHBOARD
+        - Botones grandes: "Nuevo cliente", "Buscar", "Nuevo presupuesto", "Reporte"
+        - Resumen rápido: facturado esta semana / este mes
+
+        2. ALTA CLIENTE + COCHE (un solo formulario)
+        - Datos cliente + datos coche juntos
+        - Guardar → ficha del cliente
+
+        3. BUSCAR (cliente y coche en una)
+        - Caja de búsqueda: por nombre, matrícula del coche
+        - Resultado → ficha con cliente, sus coches, e historial completo
+            (incluye las reparaciones viejas del CSV + presupuestos + facturas nuevas)
+
+        4. NUEVO PRESUPUESTO  
+        - Entras matrícula (autocompleta coche+cliente si existe) o lo creas
+        - Marcas servicios del catálogo (checkboxes)
+        - Total automático con IVA 20%
+        - Opcional: seleccionar aseguradora
+        - Botones: "Guardar PDF", "Enviar por email"
+
+        5. FACTURA (desde un presupuesto)
+        - Desde un presupuesto existente: botón "Convertir en factura"
+        - Genera número FAC-xxxxx, calcula total con IVA
+        - Botón "Enviar por email al cliente"
+        - (también accesible buscando por matrícula → ver sus presupuestos → facturar)
+
+        6. REPORTE DE VENTAS
+        - Filtro: fecha desde / fecha hasta
+        - Lista de todo lo facturado en ese rango
+        - TOTAL al final (HT, IVA, TTC)
+        - (opcional: exportar a Excel)
+
+INSTRUCCIÓN FINAL PARA CLAUDE CODE:
+    Genera el proyecto archivo por archivo en este orden, mostrándome cada uno:
+    1 requirements.txt, settings.py (con .env), urls.py del proyecto
+    2 models.py (los 8 modelos)
+    3 admin.py (registrar todos, con list_display útil)
+    4 forms.py
+    5 utils.py (generación PDF)
+    6 views.py (las 6 vistas + login)
+    7 app/urls.py
+    8 templates: base.html primero, luego login + las 6 vistas + quote_pdf + invoice_pdf
+    9 los 3 importadores (import_catalog, import_reparations, import_insurers)
+
+    Antes de escribir cada importador, muéstrame los datos que leíste del
+    archivo (catálogo PDF, CSV, JSON) para que yo confirme antes de generar.
+
+    Al final, dame los comandos exactos para arrancar (migrate, importadores,
+    createsuperuser, runserver) y un checklist de prueba manual.
+
+    Recuerda: campos en inglés sin acentos; UI en francés; Decimal para dinero;
+    WeasyPrint para PDF; auth de Django para login.
+
+TEST
+    

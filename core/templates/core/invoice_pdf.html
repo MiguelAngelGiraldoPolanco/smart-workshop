@@ -1,0 +1,18 @@
+{% extends "core/pdf_base.html" %}
+{% block title %}Facture {{ invoice.number }}{% endblock %}
+{% block content %}
+<section class="parties">
+  <strong>Date d'emission :</strong> {{ invoice.issued|date:"d/m/Y" }}<br>
+  <strong>Client :</strong> {{ quote.client.name }}<br>
+  <strong>Vehicule :</strong> {{ quote.vehicle.license_plate }} — {{ quote.vehicle.brand }} {{ quote.vehicle.model }}{% if quote.vehicle.year %} ({{ quote.vehicle.year }}){% endif %}
+  {% if quote.insurer %}<br><strong>Assureur :</strong> {{ quote.insurer.name }}{% endif %}
+</section>
+
+{% include "core/_pdf_breakdown.html" %}
+
+{% if quote.notes %}<p><strong>Notes :</strong> {{ quote.notes }}</p>{% endif %}
+<p class="footer">
+  {% if invoice.paid %}Facture acquittee{% if invoice.paid_date %} le {{ invoice.paid_date|date:"d/m/Y" }}{% endif %}.{% else %}Facture a regler.{% endif %}
+  — TVA intracom. {{ seller.vat }}
+</p>
+{% endblock %}

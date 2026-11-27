@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% block title %}Accueil — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-4">Tableau de bord</h1>
+
+<div class="row g-4 mb-5">
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'client_create' %}" class="btn btn-primary action-tile w-100">Nouveau client</a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'search' %}" class="btn btn-info action-tile w-100">Rechercher</a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'quote_create' %}" class="btn btn-success action-tile w-100">Nouveau devis</a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="{% url 'report' %}" class="btn btn-warning action-tile w-100">Rapport</a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="summary-card">
+      <div class="text-muted">Facture cette semaine</div>
+      <div class="amount">{{ week_total|floatformat:2 }} €</div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="summary-card">
+      <div class="text-muted">Facture ce mois-ci</div>
+      <div class="amount">{{ month_total|floatformat:2 }} €</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

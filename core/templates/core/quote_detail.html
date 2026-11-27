@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+{% block title %}Devis n° {{ quote.id }} — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-4">Devis n° {{ quote.id }}
+  <span class="badge bg-secondary fs-6 align-middle">{{ quote.get_status_display }}</span>
+</h1>
+
+<div class="summary-card mb-4">
+  <div><strong>Client :</strong> {{ quote.client.name }}{% if quote.client.email %} ({{ quote.client.email }}){% endif %}</div>
+  <div><strong>Vehicule :</strong> {{ quote.vehicle.license_plate }} — {{ quote.vehicle.brand }} {{ quote.vehicle.model }}</div>
+  {% if quote.insurer %}<div><strong>Assureur :</strong> {{ quote.insurer.name }} ({{ quote.insurer.discount_rate|floatformat:0 }} %)</div>{% endif %}
+</div>
+
+<table class="table table-bordered">
+  <thead><tr><th>Designation</th><th class="text-end">Qte</th><th class="text-end">PU HT</th><th class="text-end">Total HT</th></tr></thead>
+  <tbody>
+    {% for it in items %}
+    <tr>
+      <td>{{ it.service.name }}</td>
+      <td class="text-end">{{ it.quantity }}</td>
+      <td class="text-end">{{ it.unit_price|floatformat:2 }} €</td>
+      <td class="text-end">{{ it.line_total|floatformat:2 }} €</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="row justify-content-end">
+  <div class="col-md-5">
+    <table class="table">
+      {% if insurer_discount %}<tr><td>Remise assureur</td><td class="text-end">- {{ insurer_discount|floatformat:2 }} €</td></tr>{% endif %}
+      {% if quote.discount %}<tr><td>Remise manuelle</td><td class="text-end">- {{ quote.discount|floatformat:2 }} €</td></tr>{% endif %}
+      <tr><td>Sous-total HT</td><td class="text-end">{{ quote.subtotal_ht|floatformat:2 }} €</td></tr>
+      <tr><td>TVA {{ quote.vat_rate|floatformat:0 }} %</td><td class="text-end">{{ quote.vat_amount|floatformat:2 }} €</td></tr>
+      <tr class="fw-bold fs-5"><td>Total TTC</td><td class="text-end">{{ quote.total_ttc|floatformat:2 }} €</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="mt-3 d-flex flex-wrap gap-2">
+  <a href="{% url 'quote_pdf' quote.pk %}" class="btn btn-primary" target="_blank">Telecharger le PDF</a>
+  <form method="post" action="{% url 'quote_email' quote.pk %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-info">Envoyer par email</button>
+  </form>
+  {% if not invoice %}
+  <form method="post" action="{% url 'quote_to_invoice' quote.pk %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">Convertir en facture</button>
+  </form>
+  {% endif %}
+</div>
+
+{% if invoice %}
+<div class="summary-card mt-4">
+  <h2 class="h5">Facture {{ invoice.number }}</h2>
+  <div>Emise le {{ invoice.issued|date:"d/m/Y" }} — {% if invoice.paid %}Payee{% else %}A regler{% endif %}</div>
+  <div class="mt-3 d-flex flex-wrap gap-2">
+    <a href="{% url 'invoice_pdf' invoice.pk %}" class="btn btn-primary" target="_blank">PDF facture</a>
+    <form method="post" action="{% url 'invoice_email' invoice.pk %}" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-info">Envoyer la facture par email</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "core/base.html" %}
+{% block title %}{{ client.name }} — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-3">{{ client.name }}</h1>
+
+<div class="summary-card mb-4">
+  <div><strong>Email :</strong> {{ client.email|default:"—" }}</div>
+  <div><strong>Telephone :</strong> {{ client.phone|default:"—" }}</div>
+  <a href="{% url 'quote_create' %}" class="btn btn-success mt-3">Nouveau devis</a>
+</div>
+
+<h2 class="h4">Vehicules</h2>
+<table class="table table-bordered mb-4">
+  <thead><tr><th>Immatriculation</th><th>Marque</th><th>Modele</th><th>Annee</th></tr></thead>
+  <tbody>
+    {% for v in vehicles %}
+    <tr>
+      <td>{{ v.license_plate }}</td><td>{{ v.brand }}</td><td>{{ v.model }}</td>
+      <td>{{ v.year|default:"—" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Aucun vehicule.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h4">Historique des interventions</h2>
+<table class="table table-bordered mb-4">
+  <thead><tr><th>Date</th><th>Vehicule</th><th>Intervention</th><th class="text-end">Montant HT</th><th>Statut</th></tr></thead>
+  <tbody>
+    {% for r in repairs %}
+    <tr>
+      <td>{{ r.date|date:"d/m/Y" }}</td>
+      <td>{{ r.vehicle.license_plate }}</td>
+      <td>{{ r.intervention_text }}{% if r.is_legacy %} <span class="badge bg-light text-dark">historique</span>{% endif %}</td>
+      <td class="text-end">{{ r.amount_ht|floatformat:2 }} €</td>
+      <td>{{ r.status_text }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Aucune intervention.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h4">Devis</h2>
+<table class="table table-bordered mb-4">
+  <thead><tr><th>N°</th><th>Vehicule</th><th>Statut</th><th class="text-end">Total TTC</th><th></th></tr></thead>
+  <tbody>
+    {% for q in quotes %}
+    <tr>
+      <td>{{ q.id }}</td>
+      <td>{{ q.vehicle.license_plate }}</td>
+      <td>{{ q.get_status_display }}</td>
+      <td class="text-end">{{ q.total_ttc|floatformat:2 }} €</td>
+      <td><a href="{% url 'quote_detail' q.pk %}" class="btn btn-sm btn-primary">Ouvrir</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Aucun devis.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h4">Factures</h2>
+<table class="table table-bordered">
+  <thead><tr><th>Numero</th><th>Date</th><th>Statut</th><th></th></tr></thead>
+  <tbody>
+    {% for inv in invoices %}
+    <tr>
+      <td>{{ inv.number }}</td>
+      <td>{{ inv.issued|date:"d/m/Y" }}</td>
+      <td>{% if inv.paid %}Payee{% else %}A regler{% endif %}</td>
+      <td><a href="{% url 'invoice_pdf' inv.pk %}" class="btn btn-sm btn-primary" target="_blank">PDF</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Aucune facture.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

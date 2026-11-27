@@ -1,0 +1,115 @@
+{% extends "core/base.html" %}
+{% block title %}Nouveau devis — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-4">Nouveau devis</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+
+  <div class="summary-card mb-4">
+    <h2 class="h5 mb-3">Vehicule</h2>
+    <div class="mb-3">
+      <label class="form-label" for="{{ form.license_plate.id_for_label }}">Immatriculation</label>
+      {{ form.license_plate }}
+      {% for e in form.license_plate.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      <div class="form-text fs-6">Si la plaque existe deja, le client et le vehicule sont reutilises. Sinon, remplissez les champs ci-dessous.</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.client_name.id_for_label }}">Nom du client</label>
+        {{ form.client_name }}
+        {% for e in form.client_name.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label class="form-label" for="{{ form.client_email.id_for_label }}">Email</label>
+        {{ form.client_email }}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label class="form-label" for="{{ form.client_phone.id_for_label }}">Telephone</label>
+        {{ form.client_phone }}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.brand.id_for_label }}">Marque</label>
+        {{ form.brand }}
+        {% for e in form.brand.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.model.id_for_label }}">Modele</label>
+        {{ form.model }}
+        {% for e in form.model.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ form.year.id_for_label }}">Annee</label>
+        {{ form.year }}
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-card mb-4">
+    <h2 class="h5 mb-3">Services</h2>
+    {% for e in form.services.errors %}<div class="text-danger mb-2">{{ e }}</div>{% endfor %}
+    {% for category, services in service_groups.items %}
+      <h3 class="h6 mt-3">{{ category }}</h3>
+      <div class="row service-grid">
+        {% for s in services %}
+        <div class="col-md-6">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="services" value="{{ s.pk }}"
+                   id="svc{{ s.pk }}"{% if s.pk in selected_services %} checked{% endif %}>
+            <label class="form-check-label" for="svc{{ s.pk }}">{{ s.name }} — {{ s.price|floatformat:2 }} €</label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="summary-card mb-4">
+    <h2 class="h5 mb-3">Options</h2>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.insurer.id_for_label }}">Assureur (optionnel)</label>
+        {{ form.insurer }}
+        <div class="form-text fs-6">La remise partenaire s'applique automatiquement aux actes concernes.</div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ form.discount.id_for_label }}">Remise manuelle (HT)</label>
+        {{ form.discount }}
+      </div>
+      <div class="col-12 mb-3">
+        <label class="form-label" for="{{ form.notes.id_for_label }}">Notes</label>
+        {{ form.notes }}
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success btn-lg">Enregistrer le devis</button>
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">Annuler</a>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var plate = document.getElementById('{{ form.license_plate.id_for_label }}');
+  if (!plate) return;
+  function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = (val == null ? '' : val); }
+  plate.addEventListener('blur', function () {
+    var q = plate.value.trim();
+    if (!q) return;
+    fetch('{% url "search_json" %}?q=' + encodeURIComponent(q))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var hit = (d.results || []).find(function (x) { return x.plate.toUpperCase() === q.toUpperCase(); });
+        if (!hit) return;
+        setVal('{{ form.client_name.id_for_label }}', hit.client_name);
+        setVal('{{ form.client_email.id_for_label }}', hit.client_email);
+        setVal('{{ form.client_phone.id_for_label }}', hit.client_phone);
+        setVal('{{ form.brand.id_for_label }}', hit.brand);
+        setVal('{{ form.model.id_for_label }}', hit.model);
+        setVal('{{ form.year.id_for_label }}', hit.year);
+      });
+  });
+});
+</script>
+{% endblock %}

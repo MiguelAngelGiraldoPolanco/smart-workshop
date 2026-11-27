@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+{% block title %}Nouveau client — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-4">Nouveau client + vehicule</h1>
+
+<form method="post" novalidate>
+  {% csrf_token %}
+
+  <div class="summary-card mb-4">
+    <h2 class="h5 mb-3">Client</h2>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ client_form.name.id_for_label }}">Nom</label>
+        {{ client_form.name }}
+        {% for e in client_form.name.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label class="form-label" for="{{ client_form.email.id_for_label }}">Email</label>
+        {{ client_form.email }}
+        {% for e in client_form.email.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label class="form-label" for="{{ client_form.phone.id_for_label }}">Telephone</label>
+        {{ client_form.phone }}
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-card mb-4">
+    <h2 class="h5 mb-3">Vehicule</h2>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ vehicle_form.license_plate.id_for_label }}">Immatriculation</label>
+        {{ vehicle_form.license_plate }}
+        {% for e in vehicle_form.license_plate.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ vehicle_form.brand.id_for_label }}">Marque</label>
+        {{ vehicle_form.brand }}
+        {% for e in vehicle_form.brand.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ vehicle_form.model.id_for_label }}">Modele</label>
+        {{ vehicle_form.model }}
+        {% for e in vehicle_form.model.errors %}<div class="text-danger">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label" for="{{ vehicle_form.year.id_for_label }}">Annee</label>
+        {{ vehicle_form.year }}
+      </div>
+      <div class="col-md-8 mb-3">
+        <label class="form-label" for="{{ vehicle_form.vin.id_for_label }}">Numero de serie (VIN)</label>
+        {{ vehicle_form.vin }}
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-success btn-lg">Enregistrer</button>
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">Annuler</a>
+</form>
+{% endblock %}

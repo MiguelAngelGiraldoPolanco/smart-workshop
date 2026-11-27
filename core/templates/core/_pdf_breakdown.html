@@ -1,0 +1,36 @@
+{% comment %}Tableau des lignes + ventilation HT/TVA/TTC, partage devis/facture.{% endcomment %}
+<table class="items">
+  <thead>
+    <tr>
+      <th>Designation</th>
+      <th class="num">Qte</th>
+      <th class="num">PU HT</th>
+      <th class="num">Total HT</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for it in items %}
+    <tr>
+      <td>{{ it.service.name }}</td>
+      <td class="num">{{ it.quantity }}</td>
+      <td class="num">{{ it.unit_price|floatformat:2 }} €</td>
+      <td class="num">{{ it.line_total|floatformat:2 }} €</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Aucun service.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr><td>Total brut HT</td><td class="num">{{ gross|floatformat:2 }} €</td></tr>
+  {% if insurer_discount %}
+  <tr><td>Remise assureur</td><td class="num">- {{ insurer_discount|floatformat:2 }} €</td></tr>
+  {% endif %}
+  {% if manual_discount %}
+  <tr><td>Remise</td><td class="num">- {{ manual_discount|floatformat:2 }} €</td></tr>
+  {% endif %}
+  <tr><td>Sous-total HT</td><td class="num">{{ quote.subtotal_ht|floatformat:2 }} €</td></tr>
+  <tr><td>TVA {{ quote.vat_rate|floatformat:0 }} %</td><td class="num">{{ quote.vat_amount|floatformat:2 }} €</td></tr>
+  <tr class="grand"><td>Total TTC</td><td class="num">{{ quote.total_ttc|floatformat:2 }} €</td></tr>
+</table>

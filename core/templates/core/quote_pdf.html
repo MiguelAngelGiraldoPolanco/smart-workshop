@@ -1,0 +1,14 @@
+{% extends "core/pdf_base.html" %}
+{% block title %}Devis n° {{ quote.id }}{% endblock %}
+{% block content %}
+<section class="parties">
+  <strong>Client :</strong> {{ quote.client.name }}<br>
+  <strong>Vehicule :</strong> {{ quote.vehicle.license_plate }} — {{ quote.vehicle.brand }} {{ quote.vehicle.model }}{% if quote.vehicle.year %} ({{ quote.vehicle.year }}){% endif %}
+  {% if quote.insurer %}<br><strong>Assureur :</strong> {{ quote.insurer.name }} ({{ quote.insurer.discount_rate|floatformat:0 }} %){% endif %}
+</section>
+
+{% include "core/_pdf_breakdown.html" %}
+
+{% if quote.notes %}<p><strong>Notes :</strong> {{ quote.notes }}</p>{% endif %}
+<p class="footer">Devis valable 30 jours a compter de la date d'emission.</p>
+{% endblock %}

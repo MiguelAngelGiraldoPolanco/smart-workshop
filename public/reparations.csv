@@ -1,0 +1,21 @@
+date,immatriculation,marque,modele,client_nom,client_email,client_tel,intervention,montant_ht,statut,notes
+2025-11-03,AB-432-CD,Renault,Clio IV,Martin Dupont,m.dupont@gmail.com,0612345678,Remplacement pare-brise avant,250.0,Facturée,
+2025-11-08,FG-789-HI,Peugeot,308 SW,Catherine Leroy,c.leroy@yahoo.fr,06 23 45 67 89,Réparation impact pare-brise,80.0,Facturée,Pris en charge MAIF
+2025-11-15,JK-012-LM,Citroen,C3,SARL Transports Boudet,contact@transports-boudet.fr,0567890123,Vitre latérale gauche + joint,320.0,En attente paiement,Devis 2025-138
+2025-11-20,NO-345-PQ,Volkswagen,Golf VII,Sophie Marchand,sophie.marchand@orange.fr,06.34.56.78.90,Lunette arrière dégivrante,270.0,Facturée,
+2025-11-22,AB-432-CD,Renault,Clio IV,Martin Dupont,m.dupont@gmial.com,0612345678,Réparation impact,80.0,Facturée,2e fois ce client
+2025-11-25,RS-678-TU,BMW,Serie 3,Olivier Faure,o.faure@protonmail.com,0698765432,Pare-brise avant premium + recalibrage ADAS,485.0,Facturée,Allianz pris en charge -10%
+2025-12-01,VW-901-XY,Audi,A4,Mme Bernard,,0567123456,Vitre avant droite premium,240.0,Facturée,Pas d'email donné
+2025-12-05,CD-234-EF,Ford,Fiesta,Julien Roussel,j.roussel@laposte.net,06 11 22 33 44,Joint de portière AV gauche,65.0,Facturée,
+2025-12-08,GH-567-IJ,Renault,Master,EURL Plombier Express,contact@plombier-express.fr,0561234567,Pare-brise utilitaire,280.0,En attente paiement,Pro - délai 30j
+2025-12-12,KL-890-MN,Mercedes,Classe C,Pierre Aubert,p.aubert@yahoo.fr,0698765432,Pare-brise premium chauffant + recalibrage ADAS,565.0,Facturée,
+2025-12-15,OP-123-QR,Toyota,Yaris,Marie Lefebvre,m.lefebvre@gmail.com,06 87 65 43 21,Réparation impact x2,120.0,Facturée,MAIF -8%
+2025-12-18,AB-432-CD,Renault,Clio IV,Martin Dupont,m.dupont@gmail.com,0612345678,Joint pare-brise,120.0,Facturée,3e visite — fidèle
+2026-01-05,ST-456-UV,Citroen,Berlingo,SAS Couvreur Toulousain,admin@couvreur-toulousain.fr,0561987654,Pare-brise utilitaire + ess. nouvelle paire,308.0,Facturée,Pro - règlement 60j
+2026-01-09,WX-789-YZ,Renault,Megane IV,Anne-Sophie Patel,as.patel@free.fr,06.99.88.77.66,Vitre arrière gauche,160.0,Facturée,
+2026-01-12,JK-012-LM,Citroen,C3,SARL Transports Boudet,contact@transports-boudet.fr,0567890123,Joint coffre + diagnostic fuite,115.0,Facturée,Devis ant. 2025-138
+2026-01-15,AB-101-CD,Tesla,Model 3,Lucas Mercier,lucas.m@icloud.com,0698765410,Pare-brise avant premium + ADAS recalibrage,495.0,En cours réparation,Pièce sur commande
+2026-01-18,EF-234-GH,Renault,Trafic,Marc Lépine,m.lepine@free.fr,0612340000,Pare-brise utilitaire,280.0,Devis envoyé,Attente accord client
+2026-01-22,IJ-567-KL,Peugeot,208,Famille Garnier,cgarnier@gmail.com,06 78 90 12 34,Réparation impact,80.0,Facturée,
+2026-01-25,MN-890-OP,Volkswagen,Polo,Jean-Marc Dubois,jm.dubois@hotmail.fr,,Pare-brise standard + essuie-glaces,278.0,Facturée,Tel pas donné
+2026-01-28,AB-432-CD,Renault,Clio IV,Martin Dupont,m.dupont@gmail.com,0612345678,Réparation impact,80.0,En attente RDV,A rappeler

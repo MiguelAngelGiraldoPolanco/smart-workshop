@@ -1,0 +1,26 @@
+[
+  {
+    "nom": "Allianz France",
+    "contact_principal": "service.brisdeglace@allianz.fr",
+    "format_envoi": "portail",
+    "url_portail": "https://portail-pro.allianz.fr/sinistres/declarer",
+    "code_partenaire": "ATV-31-2148",
+    "remarque": "Faut se connecter, créer le sinistre, joindre le devis PDF. Très chiant. Délai de réponse 5-7 jours.",
+    "remise_appliquee": "10%"
+  },
+  {
+    "nom": "MAIF",
+    "contact_principal": "indem.toulouse@maif.fr",
+    "format_envoi": "email",
+    "remarque": "Email simple avec PDF attaché. Réponse sous 48h en général. Très réglo.",
+    "remise_appliquee": "8%"
+  },
+  {
+    "nom": "Macif",
+    "contact_principal": "fax:0561234567",
+    "email_secondaire": "indemnisation.toulouse@macif.fr",
+    "format_envoi": "fax_ou_email",
+    "remarque": "Officiellement fax (système hérité). Mais l'agent local accepte les emails à indemnisation.toulouse@macif.fr depuis 2024. Préviens par tel quand t'envoies.",
+    "remise_appliquee": "12% (impacts uniquement)"
+  }
+]

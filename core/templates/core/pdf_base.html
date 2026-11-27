@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: 'DejaVu Sans', sans-serif; font-size: 12px; color: #222; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  .seller { margin-bottom: 20px; }
+  .muted { color: #666; font-size: 11px; }
+  .parties { margin-bottom: 16px; line-height: 1.5; }
+  table.items { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  table.items th, table.items td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+  table.items th.num, table.items td.num { text-align: right; }
+  table.items thead th { background: #f0f0f0; }
+  table.totals { width: 50%; margin-left: 50%; margin-top: 14px; border-collapse: collapse; }
+  table.totals td { padding: 4px 8px; }
+  table.totals td.num { text-align: right; }
+  table.totals tr.grand td { font-weight: bold; font-size: 15px; border-top: 2px solid #333; }
+  .footer { margin-top: 26px; font-size: 10px; color: #666; }
+</style>
+</head>
+<body>
+  <header class="seller">
+    <h1>{% block title %}{% endblock %}</h1>
+    <div><strong>{{ seller.name }}</strong></div>
+    <div class="muted">{{ seller.address }}</div>
+    <div class="muted">SIRET : {{ seller.siret }} — TVA intracom. : {{ seller.vat }}</div>
+    <div class="muted">Email : {{ seller.email }}</div>
+  </header>
+
+  {% block content %}{% endblock %}
+</body>
+</html>

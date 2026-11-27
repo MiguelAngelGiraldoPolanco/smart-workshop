@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% block title %}Rapport des ventes — AtelierVitre{% endblock %}
+{% block content %}
+<h1 class="mb-4">Rapport des ventes</h1>
+
+<form method="get" class="summary-card mb-4">
+  <div class="row align-items-end">
+    <div class="col-md-4 mb-2">
+      <label class="form-label" for="{{ form.date_from.id_for_label }}">Du</label>
+      {{ form.date_from }}
+    </div>
+    <div class="col-md-4 mb-2">
+      <label class="form-label" for="{{ form.date_to.id_for_label }}">Au</label>
+      {{ form.date_to }}
+    </div>
+    <div class="col-md-4 mb-2">
+      <button type="submit" class="btn btn-primary">Filtrer</button>
+      <a href="{% url 'report_excel' %}?{{ query }}" class="btn btn-success">Exporter Excel</a>
+    </div>
+  </div>
+</form>
+
+<table class="table table-bordered">
+  <thead><tr><th>Numero</th><th>Date</th><th>Client</th><th class="text-end">HT</th><th class="text-end">TVA</th><th class="text-end">TTC</th></tr></thead>
+  <tbody>
+    {% for inv in invoices %}
+    <tr>
+      <td>{{ inv.number }}</td>
+      <td>{{ inv.issued|date:"d/m/Y" }}</td>
+      <td>{{ inv.quote.client.name }}</td>
+      <td class="text-end">{{ inv.quote.subtotal_ht|floatformat:2 }} €</td>
+      <td class="text-end">{{ inv.quote.vat_amount|floatformat:2 }} €</td>
+      <td class="text-end">{{ inv.quote.total_ttc|floatformat:2 }} €</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Aucune facture sur la periode.</td></tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="fw-bold fs-5">
+      <td colspan="3">Total</td>
+      <td class="text-end">{{ totals.ht|default:0|floatformat:2 }} €</td>
+      <td class="text-end">{{ totals.tva|default:0|floatformat:2 }} €</td>
+      <td class="text-end">{{ totals.ttc|default:0|floatformat:2 }} €</td>
+    </tr>
+  </tfoot>
+</table>
+{% endblock %}
